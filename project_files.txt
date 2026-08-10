@@ -1,0 +1,10 @@
+C:\xampp\htdocs\dynamic-groove-website\groove-next-dashboard\app\dashboard
+C:\xampp\htdocs\dynamic-groove-website\groove-next-dashboard\app\favicon.ico
+C:\xampp\htdocs\dynamic-groove-website\groove-next-dashboard\app\globals.css
+C:\xampp\htdocs\dynamic-groove-website\groove-next-dashboard\app\layout.tsx
+C:\xampp\htdocs\dynamic-groove-website\groove-next-dashboard\app\page.tsx
+C:\xampp\htdocs\dynamic-groove-website\groove-next-dashboard\app\dashboard\bookings
+C:\xampp\htdocs\dynamic-groove-website\groove-next-dashboard\app\dashboard\media-gallery
+C:\xampp\htdocs\dynamic-groove-website\groove-next-dashboard\app\dashboard\page.tsx
+C:\xampp\htdocs\dynamic-groove-website\groove-next-dashboard\app\dashboard\bookings\page.tsx
+C:\xampp\htdocs\dynamic-groove-website\groove-next-dashboard\app\dashboard\media-gallery\page.tsx
