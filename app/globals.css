@@ -43,6 +43,12 @@ body {
   }
 }
 
+/* video.js: keep HLS video letterboxed inside its frame (never stretch/crop) */
+.video-js .vjs-tech,
+.video-js.vjs-tech {
+  object-fit: contain;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

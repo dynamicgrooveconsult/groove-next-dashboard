@@ -28,7 +28,7 @@ function GuestProtected() {
 
   if (!authorized) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-black">
+      <div className="w-full max-w-6xl mx-auto aspect-video max-h-[60vh] rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-black flex items-center justify-center">
         <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 text-center space-y-4">
           <h3 className="text-yellow-500 font-semibold">
             🔒 Guest Session Access
@@ -68,7 +68,7 @@ function GuestProtected() {
   }
 
   return (
-    <div className="w-full h-full flex items-center justify-center bg-black">
+    <div className="w-full max-w-6xl mx-auto aspect-video rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-black flex items-center justify-center">
       <div className="text-center space-y-5">
         <h2 className="text-yellow-500 font-bold uppercase tracking-wider">
           🎛 Director Control Panel
@@ -508,19 +508,19 @@ export default function LiveBroadcastPage() {
         )}
 
         {/* VIDEO PANEL */}
-        <div className="relative w-full max-w-full aspect-video max-h-[60vh] mx-auto bg-black rounded-lg border border-zinc-800 overflow-hidden">
+        <div className="relative w-full">
 
           {activeSource === 'hls' && <SmartPlayer />}
 
           {activeSource === 'youtube' && (
             getYouTubeEmbed()
-              ? <iframe className="w-full h-full" src={getYouTubeEmbed() || undefined} allowFullScreen />
+              ? <iframe className="block w-full max-w-6xl mx-auto aspect-video max-h-[60vh] rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-black" src={getYouTubeEmbed() || undefined} allowFullScreen />
               : <StandbyOverlay label="YouTube Live" />
           )}
 
           {activeSource === 'facebook' && (
             getFacebookEmbed()
-              ? <iframe className="w-full h-full" src={getFacebookEmbed() || undefined} allowFullScreen />
+              ? <iframe className="block w-full max-w-6xl mx-auto aspect-video max-h-[60vh] rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-black" src={getFacebookEmbed() || undefined} allowFullScreen />
               : <StandbyOverlay label="Facebook Live" />
           )}
 

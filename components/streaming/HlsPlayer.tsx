@@ -19,14 +19,12 @@ export default function HlsPlayer() {
       if (videoRef.current && !playerRef.current) {
         const videoElement = document.createElement('video-js')
         videoElement.className =
-          'vjs-big-play-centered object-contain w-full h-full'
+          'video-js vjs-big-play-centered object-contain w-full h-full'
         videoRef.current.appendChild(videoElement)
 
         playerRef.current = videojs(videoElement, {
           autoplay: true,
           controls: true,
-          responsive: true,
-          fluid: true,
           sources: [
             {
               src: hlsUrl,
@@ -49,5 +47,10 @@ export default function HlsPlayer() {
     }
   }, [hlsUrl])
 
-  return <div ref={videoRef} className="w-full h-full" />
+  return (
+    <div
+      ref={videoRef}
+      className="relative w-full max-w-6xl mx-auto aspect-video max-h-[60vh] bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800 flex items-center justify-center"
+    />
+  )
 }

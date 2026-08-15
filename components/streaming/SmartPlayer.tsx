@@ -36,8 +36,6 @@ export default function SmartPlayer() {
     const player = videojs(videoElement, {
       autoplay: true,
       controls: true,
-      responsive: true,
-      fluid: true,
       preload: 'metadata', // ✅ Faster startup
       liveui: true,
       html5: {
@@ -87,7 +85,7 @@ export default function SmartPlayer() {
   }, [activeSource, hlsUrl, setIsLive])
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full max-w-6xl mx-auto aspect-video max-h-[60vh] bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800 flex items-center justify-center">
       <div ref={containerRef} className="w-full h-full" />
       {!localLive && <StandbyOverlay label="Native HLS" />}
     </div>
