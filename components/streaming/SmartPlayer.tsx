@@ -6,17 +6,16 @@ import 'video.js/dist/video-js.css'
 import { useStreamStore } from '@/lib/store'
 import StandbyOverlay from './StandbyOverlay'
 
-const HLS_STREAM_URL = 'http://127.0.0.1:8585/hls/stream.m3u8'
-
 export default function SmartPlayer() {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const playerRef = useRef<any>(null)
   const [localLive, setLocalLive] = useState(false)
 
-  const { activeSource, setIsLive } = useStreamStore()
+  const { activeSource, setIsLive, hlsUrl } = useStreamStore()
 
   useEffect(() => {
     if (activeSource !== 'hls') return
+    if (!hlsUrl) return
     if (!containerRef.current) return
 
     // ✅ Clean previous instance safely
@@ -27,7 +26,7 @@ export default function SmartPlayer() {
 
     const videoElement = document.createElement('video')
     videoElement.className =
-      'video-js vjs-big-play-centered w-full h-full'
+      'video-js vjs-big-play-centered object-contain w-full h-full'
     videoElement.setAttribute('playsinline', 'true')
     videoElement.setAttribute('muted', 'true') // ✅ helps autoplay instantly
 
@@ -50,7 +49,7 @@ export default function SmartPlayer() {
       },
       sources: [
         {
-          src: HLS_STREAM_URL + '?t=' + Date.now(), // ✅ Avoid cache delay
+          src: hlsUrl + '?t=' + Date.now(), // ✅ Avoid cache delay
           type: 'application/x-mpegURL',
         },
       ],
@@ -73,7 +72,7 @@ export default function SmartPlayer() {
         if (!playerRef.current) return
 
         playerRef.current.src({
-          src: HLS_STREAM_URL + '?t=' + Date.now(),
+          src: hlsUrl + '?t=' + Date.now(),
           type: 'application/x-mpegURL',
         })
       }, 2000) // ✅ Faster retry
@@ -85,7 +84,7 @@ export default function SmartPlayer() {
         playerRef.current = null
       }
     }
-  }, [activeSource, setIsLive])
+  }, [activeSource, hlsUrl, setIsLive])
 
   return (
     <div className="relative w-full h-full">

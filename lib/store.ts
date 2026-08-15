@@ -27,6 +27,7 @@ interface StreamStore {
   youtubeId: string
   isChannel: boolean
   facebookInput: string
+  hlsUrl: string
   isProducerMode: boolean
   analytics: StreamAnalytics
   setActiveSource: (source: StreamSource | null) => void
@@ -35,6 +36,7 @@ interface StreamStore {
   setYoutubeId: (id: string) => void
   setIsChannel: (channel: boolean) => void
   setFacebookInput: (input: string) => void
+  setHlsUrl: (url: string) => void
   toggleProducerMode: () => void
   updateAnalytics: (partial: Partial<StreamAnalytics>) => void
 }
@@ -64,6 +66,7 @@ export const useStreamStore = create<StreamStore>((set) => ({
   youtubeId: '',
   isChannel: true,
   facebookInput: '',
+  hlsUrl: 'http://127.0.0.1:8585/hls/stream.m3u8',
   isProducerMode: false,
   analytics: defaultAnalytics,
   setActiveSource: (source) => set({ activeSource: source }),
@@ -77,6 +80,7 @@ export const useStreamStore = create<StreamStore>((set) => ({
   setYoutubeId: (id) => set({ youtubeId: id }),
   setIsChannel: (channel) => set({ isChannel: channel }),
   setFacebookInput: (input) => set({ facebookInput: input }),
+  setHlsUrl: (url) => set({ hlsUrl: url }),
   toggleProducerMode: () =>
     set((state) => ({ isProducerMode: !state.isProducerMode })),
   updateAnalytics: (partial) =>

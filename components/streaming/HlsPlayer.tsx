@@ -1,14 +1,15 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-
-const HLS_STREAM_URL = 'http://localhost:8585/hls/stream.m3u8'
+import { useStreamStore } from '@/lib/store'
 
 export default function HlsPlayer() {
   const videoRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<any>(null)
+  const hlsUrl = useStreamStore((s) => s.hlsUrl)
 
   useEffect(() => {
+    if (!hlsUrl) return
     let cancelled = false
 
     import('video.js').then((vjsModule) => {
@@ -17,7 +18,8 @@ export default function HlsPlayer() {
 
       if (videoRef.current && !playerRef.current) {
         const videoElement = document.createElement('video-js')
-        videoElement.className = 'vjs-big-play-centered w-full h-full'
+        videoElement.className =
+          'vjs-big-play-centered object-contain w-full h-full'
         videoRef.current.appendChild(videoElement)
 
         playerRef.current = videojs(videoElement, {
@@ -27,7 +29,7 @@ export default function HlsPlayer() {
           fluid: true,
           sources: [
             {
-              src: HLS_STREAM_URL,
+              src: hlsUrl,
               type: 'application/x-mpegURL',
             },
           ],
@@ -45,7 +47,7 @@ export default function HlsPlayer() {
         videoRef.current.innerHTML = ''
       }
     }
-  }, [])
+  }, [hlsUrl])
 
   return <div ref={videoRef} className="w-full h-full" />
 }

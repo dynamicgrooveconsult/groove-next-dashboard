@@ -101,6 +101,8 @@ export default function LiveBroadcastPage() {
     setIsChannel,
     facebookInput,
     setFacebookInput,
+    hlsUrl,
+    setHlsUrl,
   } = useStreamStore()
 
   const [authorized, setAuthorized] = useState(false)
@@ -167,10 +169,12 @@ export default function LiveBroadcastPage() {
   useEffect(() => {
     const savedYT = localStorage.getItem('yt-channel-id')
     const savedFB = localStorage.getItem('fb-video-input')
+    const savedHLS = localStorage.getItem('hls-url')
 
     if (savedYT) setYoutubeId(savedYT)
     if (savedFB) setFacebookInput(savedFB)
-  }, [setYoutubeId, setFacebookInput])
+    if (savedHLS) setHlsUrl(savedHLS)
+  }, [setYoutubeId, setFacebookInput, setHlsUrl])
 
   useEffect(() => {
     localStorage.setItem('yt-channel-id', youtubeId)
@@ -180,12 +184,29 @@ export default function LiveBroadcastPage() {
     localStorage.setItem('fb-video-input', facebookInput)
   }, [facebookInput])
 
+  useEffect(() => {
+    localStorage.setItem('hls-url', hlsUrl)
+  }, [hlsUrl])
+
   /* ================= RTMP STATS ================= */
 
   useEffect(() => {
+    let origin: string | null = null
+    try {
+      origin = new URL(hlsUrl).origin
+    } catch {
+      origin = null
+    }
+
     const fetchStats = async () => {
+      if (!origin) {
+        setBitrate(null)
+        setClients(null)
+        return
+      }
+
       try {
-        const res = await fetch('http://127.0.0.1:8585/stat')
+        const res = await fetch(`${origin}/stat`)
         const text = await res.text()
 
         const bitrateMatch = text.match(/<bw_in>(\d+)<\/bw_in>/)
@@ -202,7 +223,7 @@ export default function LiveBroadcastPage() {
     fetchStats()
     const interval = setInterval(fetchStats, 3000)
     return () => clearInterval(interval)
-  }, [])
+  }, [hlsUrl])
 
   /* ================= URL BUILDERS ================= */
 
@@ -439,6 +460,22 @@ export default function LiveBroadcastPage() {
 
             <div>
               <label className="text-xs text-zinc-400 uppercase">
+                Native HLS URL
+              </label>
+              <input
+                value={hlsUrl}
+                onChange={(e) => setHlsUrl(e.target.value)}
+                placeholder="http://192.168.1.50:8585/hls/stream.m3u8"
+                className="w-full bg-black border border-zinc-700 px-3 py-2 rounded text-sm mt-2"
+              />
+              <p className="text-xs text-zinc-600 mt-1">
+                The .m3u8 playlist URL your media server serves (e.g. your LAN
+                IP so mobile &amp; remote viewers can connect).
+              </p>
+            </div>
+
+            <div>
+              <label className="text-xs text-zinc-400 uppercase">
                 YouTube Channel / Video ID
               </label>
               <div className="flex gap-3 mt-2">
@@ -471,7 +508,7 @@ export default function LiveBroadcastPage() {
         )}
 
         {/* VIDEO PANEL */}
-        <div className="aspect-video bg-black rounded-lg border border-zinc-800 overflow-hidden relative">
+        <div className="relative w-full max-w-full aspect-video max-h-[60vh] mx-auto bg-black rounded-lg border border-zinc-800 overflow-hidden">
 
           {activeSource === 'hls' && <SmartPlayer />}
 
