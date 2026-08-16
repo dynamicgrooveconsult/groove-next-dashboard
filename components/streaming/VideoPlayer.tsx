@@ -114,7 +114,10 @@ export default function VideoPlayer() {
   const facebookEmbed = getFacebookEmbed()
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto aspect-video rounded-xl overflow-hidden bg-black border border-zinc-800 shadow-2xl">
+    <div
+      className="relative w-auto mx-auto aspect-video max-h-[70vh] rounded-xl overflow-hidden bg-black border border-zinc-800 shadow-2xl"
+      style={{ maxWidth: 'min(72rem, 100%, calc(70vh * 16 / 9))' }}
+    >
       {activeSource === 'hls' && <SmartPlayer />}
 
       {activeSource === 'youtube' &&
