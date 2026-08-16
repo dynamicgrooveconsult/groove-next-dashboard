@@ -26,7 +26,7 @@ export default function SmartPlayer() {
 
     const videoElement = document.createElement('video')
     videoElement.className =
-      'video-js vjs-big-play-centered object-contain w-full h-full'
+      'video-js vjs-big-play-centered object-cover w-full h-full'
     videoElement.setAttribute('playsinline', 'true')
     videoElement.setAttribute('muted', 'true') // ✅ helps autoplay instantly
 
@@ -85,7 +85,7 @@ export default function SmartPlayer() {
   }, [activeSource, hlsUrl, setIsLive])
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto aspect-video max-h-[60vh] bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800 flex items-center justify-center">
+    <div className="absolute inset-0">
       <div ref={containerRef} className="w-full h-full" />
       {!localLive && <StandbyOverlay label="Native HLS" />}
     </div>

@@ -2,108 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import SmartPlayer from '@/components/streaming/SmartPlayer'
-import StandbyOverlay from '@/components/streaming/StandbyOverlay'
+import StreamTabs from '@/components/streaming/StreamTabs'
+import VideoPlayer from '@/components/streaming/VideoPlayer'
 import { useStreamStore } from '@/lib/store'
-
-const tabs = [
-  { key: 'hls', label: 'NATIVE HLS' },
-  { key: 'youtube', label: 'YOUTUBE LIVE' },
-  { key: 'facebook', label: 'FACEBOOK LIVE' },
-  { key: 'guest', label: 'GUEST INTERVIEW' },
-] as const
 
 const ACCESS_CODE = 'DGM2024'
 
-const ROOM_NAME = 'DYNAMIC_GROOVE'
-const ROOM_PASSWORD = 'YOUR_PASSWORD'
-
-function GuestProtected() {
-  const [authorized, setAuthorized] = useState(false)
-  const [code, setCode] = useState('')
-  const [error, setError] = useState(false)
-
-  const directorUrl = `https://vdo.ninja/?director=${ROOM_NAME}&pwd=${ROOM_PASSWORD}`
-  const guestUrl = `https://vdo.ninja/?room=${ROOM_NAME}&pwd=${ROOM_PASSWORD}`
-
-  if (!authorized) {
-    return (
-      <div className="w-full max-w-6xl mx-auto aspect-video max-h-[60vh] rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-black flex items-center justify-center">
-        <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 text-center space-y-4">
-          <h3 className="text-yellow-500 font-semibold">
-            🔒 Guest Session Access
-          </h3>
-
-          <input
-            type="password"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="bg-black border border-zinc-700 px-4 py-2 rounded"
-            placeholder="Enter guest access code"
-          />
-
-          {error && <p className="text-red-400 text-sm">Invalid code</p>}
-
-          <button
-            onClick={async () => {
-              const res = await fetch('/api/guest-auth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code }),
-              })
-
-              if (res.ok) {
-                setAuthorized(true)
-              } else {
-                setError(true)
-              }
-            }}
-            className="bg-yellow-500 text-black px-6 py-2 rounded-full"
-          >
-            Unlock
-          </button>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="w-full max-w-6xl mx-auto aspect-video rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-black flex items-center justify-center">
-      <div className="text-center space-y-5">
-        <h2 className="text-yellow-500 font-bold uppercase tracking-wider">
-          🎛 Director Control Panel
-        </h2>
-
-        <div className="bg-zinc-900 p-3 rounded border border-zinc-800 break-all text-sm">
-          {guestUrl}
-        </div>
-
-        <button
-          onClick={() =>
-            window.open(directorUrl, '_blank', 'noopener,noreferrer')
-          }
-          className="bg-yellow-500 text-black px-5 py-2 rounded font-semibold"
-        >
-          Launch Director Console
-        </button>
-      </div>
-    </div>
-  )
-}
-
 export default function LiveBroadcastPage() {
-  const {
-    activeSource,
-    setActiveSource,
-    youtubeId,
-    setYoutubeId,
-    isChannel,
-    setIsChannel,
-    facebookInput,
-    setFacebookInput,
-    hlsUrl,
-    setHlsUrl,
-  } = useStreamStore()
+  const { setActiveSource } = useStreamStore()
 
   const [authorized, setAuthorized] = useState(false)
   const [code, setCode] = useState('')
@@ -111,9 +17,6 @@ export default function LiveBroadcastPage() {
   const [loading, setLoading] = useState(false)
   const [leaving, setLeaving] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
-  const [isEditing, setIsEditing] = useState(false)
-  const [bitrate, setBitrate] = useState<number | null>(null)
-  const [clients, setClients] = useState<number | null>(null)
 
   /* ================= ACCESS CONTROL ================= */
 
@@ -123,6 +26,11 @@ export default function LiveBroadcastPage() {
       setAuthorized(true)
     }
   }, [])
+
+  // Default to the native HLS source so the player shows immediately
+  useEffect(() => {
+    setActiveSource('hls')
+  }, [setActiveSource])
 
   // Shake animation trigger for wrong code
   const triggerShake = () => {
@@ -162,97 +70,6 @@ export default function LiveBroadcastPage() {
       }
       setLoading(false)
     }, 300)
-  }
-
-  /* ================= LOCAL STORAGE ================= */
-
-  useEffect(() => {
-    const savedYT = localStorage.getItem('yt-channel-id')
-    const savedFB = localStorage.getItem('fb-video-input')
-    const savedHLS = localStorage.getItem('hls-url')
-
-    if (savedYT) setYoutubeId(savedYT)
-    if (savedFB) setFacebookInput(savedFB)
-    if (savedHLS) setHlsUrl(savedHLS)
-  }, [setYoutubeId, setFacebookInput, setHlsUrl])
-
-  useEffect(() => {
-    localStorage.setItem('yt-channel-id', youtubeId)
-  }, [youtubeId])
-
-  useEffect(() => {
-    localStorage.setItem('fb-video-input', facebookInput)
-  }, [facebookInput])
-
-  useEffect(() => {
-    localStorage.setItem('hls-url', hlsUrl)
-  }, [hlsUrl])
-
-  /* ================= RTMP STATS ================= */
-
-  useEffect(() => {
-    let origin: string | null = null
-    try {
-      origin = new URL(hlsUrl).origin
-    } catch {
-      origin = null
-    }
-
-    const fetchStats = async () => {
-      if (!origin) {
-        setBitrate(null)
-        setClients(null)
-        return
-      }
-
-      try {
-        const res = await fetch(`${origin}/stat`)
-        const text = await res.text()
-
-        const bitrateMatch = text.match(/<bw_in>(\d+)<\/bw_in>/)
-        const clientMatch = text.match(/<nclients>(\d+)<\/nclients>/)
-
-        if (bitrateMatch) setBitrate(parseInt(bitrateMatch[1]))
-        if (clientMatch) setClients(parseInt(clientMatch[1]))
-      } catch {
-        setBitrate(null)
-        setClients(null)
-      }
-    }
-
-    fetchStats()
-    const interval = setInterval(fetchStats, 3000)
-    return () => clearInterval(interval)
-  }, [hlsUrl])
-
-  /* ================= URL BUILDERS ================= */
-
-  const getYouTubeEmbed = () => {
-    if (!youtubeId) return null
-    return isChannel
-      ? `https://www.youtube.com/embed/live_stream?channel=${youtubeId}&autoplay=1`
-      : `https://www.youtube.com/embed/${youtubeId}?autoplay=1`
-  }
-
-  const getFacebookEmbed = () => {
-    if (!facebookInput) return null
-
-    let videoUrl = facebookInput.trim()
-
-    if (videoUrl.includes('<iframe')) {
-      const match = videoUrl.match(/src="([^"]+)"/)
-      if (match && match[1]) {
-        return match[1]
-      }
-    }
-
-    if (videoUrl.includes('/videos/')) {
-      return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(
-        videoUrl
-      )}&show_text=false&autoplay=1`
-    }
-
-    return null
   }
 
   if (!authorized) {
@@ -427,148 +244,13 @@ export default function LiveBroadcastPage() {
   return (
     <div className="min-h-screen bg-[#050505] text-white p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-
         {/* HEADER */}
-        <div className="flex justify-between items-center border-b border-zinc-800 pb-4">
-          <div className="flex gap-6">
-            {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveSource(tab.key)}
-                className={`font-bold pb-1 ${
-                  activeSource === tab.key
-                    ? 'text-yellow-500 border-b-2 border-yellow-500'
-                    : 'text-zinc-500'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="text-xs text-zinc-500 hover:text-yellow-500 underline"
-          >
-            {isEditing ? 'Hide Settings' : 'Edit Stream Settings'}
-          </button>
+        <div className="border-b border-zinc-800 pb-4">
+          <StreamTabs />
         </div>
-
-        {/* SETTINGS PANEL */}
-        {isEditing && (
-          <div className="bg-zinc-900 p-5 rounded-lg border border-zinc-800 space-y-4">
-
-            <div>
-              <label className="text-xs text-zinc-400 uppercase">
-                Native HLS URL
-              </label>
-              <input
-                value={hlsUrl}
-                onChange={(e) => setHlsUrl(e.target.value)}
-                placeholder="http://192.168.1.50:8585/hls/stream.m3u8"
-                className="w-full bg-black border border-zinc-700 px-3 py-2 rounded text-sm mt-2"
-              />
-              <p className="text-xs text-zinc-600 mt-1">
-                The .m3u8 playlist URL your media server serves (e.g. your LAN
-                IP so mobile &amp; remote viewers can connect).
-              </p>
-            </div>
-
-            <div>
-              <label className="text-xs text-zinc-400 uppercase">
-                YouTube Channel / Video ID
-              </label>
-              <div className="flex gap-3 mt-2">
-                <input
-                  value={youtubeId}
-                  onChange={(e) => setYoutubeId(e.target.value)}
-                  className="flex-1 bg-black border border-zinc-700 px-3 py-2 rounded text-sm"
-                />
-                <button
-                  onClick={() => setIsChannel(!isChannel)}
-                  className="bg-zinc-800 px-3 py-2 rounded text-xs"
-                >
-                  Mode: {isChannel ? 'Channel' : 'Video ID'}
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs text-zinc-400 uppercase">
-                Facebook Video URL / Embed
-              </label>
-              <input
-                value={facebookInput}
-                onChange={(e) => setFacebookInput(e.target.value)}
-                className="w-full bg-black border border-zinc-700 px-3 py-2 rounded text-sm mt-2"
-              />
-            </div>
-
-          </div>
-        )}
 
         {/* VIDEO PANEL */}
-        <div className="relative w-full">
-
-          {activeSource === 'hls' && <SmartPlayer />}
-
-          {activeSource === 'youtube' && (
-            getYouTubeEmbed()
-              ? <iframe className="block w-full max-w-6xl mx-auto aspect-video max-h-[60vh] rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-black" src={getYouTubeEmbed() || undefined} allowFullScreen />
-              : <StandbyOverlay label="YouTube Live" />
-          )}
-
-          {activeSource === 'facebook' && (
-            getFacebookEmbed()
-              ? <iframe className="block w-full max-w-6xl mx-auto aspect-video max-h-[60vh] rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-black" src={getFacebookEmbed() || undefined} allowFullScreen />
-              : <StandbyOverlay label="Facebook Live" />
-          )}
-
-          {activeSource === 'guest' && <GuestProtected />}
-
-        </div>
-
-        {/* MONITORING PANEL */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-
-          <div className="bg-zinc-900 p-4 rounded border border-zinc-800">
-            <p className="text-xs text-zinc-500">Bitrate</p>
-            <p className="text-lg font-bold text-green-400">
-              {bitrate ? `${bitrate} kbps` : '—'}
-            </p>
-          </div>
-
-          <div className="bg-zinc-900 p-4 rounded border border-zinc-800">
-            <p className="text-xs text-zinc-500">Viewers</p>
-            <p className="text-lg font-bold text-yellow-400">
-              {clients ?? '—'}
-            </p>
-          </div>
-
-          <div className="bg-zinc-900 p-4 rounded border border-zinc-800">
-            <p className="text-xs text-zinc-500">Bandwidth</p>
-            <p className="text-lg font-bold text-blue-400">
-              {bitrate ? `${(bitrate / 1000).toFixed(2)} Mbps` : '—'}
-            </p>
-          </div>
-
-          <div className="bg-zinc-900 p-4 rounded border border-zinc-800">
-            <p className="text-xs text-zinc-500">Stream Strength</p>
-            <p className={`text-lg font-bold ${
-              bitrate && bitrate > 1500 ? 'text-green-400'
-              : bitrate && bitrate > 800 ? 'text-yellow-400'
-              : 'text-red-400'
-            }`}>
-              {bitrate && bitrate > 1500
-                ? 'Excellent'
-                : bitrate && bitrate > 800
-                ? 'Good'
-                : 'Weak'}
-            </p>
-          </div>
-
-        </div>
-
+        <VideoPlayer />
       </div>
     </div>
   )

@@ -43,10 +43,11 @@ body {
   }
 }
 
-/* video.js: keep HLS video letterboxed inside its frame (never stretch/crop) */
+/* video.js: fill the 16:9 player frame with the video feed (no letterboxing).
+   Source is OBS at native 1920x1080, so cover maps cleanly with no cropping. */
 .video-js .vjs-tech,
 .video-js.vjs-tech {
-  object-fit: contain;
+  object-fit: cover;
 }
 
 ::-webkit-scrollbar {
