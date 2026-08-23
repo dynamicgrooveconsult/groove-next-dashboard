@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export default function AccessPage() {
@@ -9,7 +8,6 @@ export default function AccessPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [leaving, setLeaving] = useState(false)
-  const router = useRouter()
   const cardRef = useRef<HTMLDivElement>(null)
 
   const triggerShake = () => {
@@ -41,7 +39,9 @@ export default function AccessPage() {
 
       if (res.ok) {
         setLeaving(true)
-        setTimeout(() => router.replace('/live-broadcast'), 400)
+        setTimeout(() => {
+          window.location.href = '/live-broadcast'
+        }, 400)
       } else {
         setError('Invalid access code — please try again.')
         triggerShake()
