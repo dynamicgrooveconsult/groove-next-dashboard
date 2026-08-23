@@ -12,6 +12,14 @@ export function proxy(request: NextRequest) {
     }
   }
 
+  // Already-authenticated visitors should never see the access gate again
+  if (pathname === '/access') {
+    const auth = request.cookies.get('broadcast_auth')
+    if (auth && auth.value === 'granted') {
+      return NextResponse.redirect(new URL('/live-broadcast', request.url))
+    }
+  }
+
   // Protect admin dashboard routes
   if (pathname.startsWith('/admin/dashboard')) {
     const adminAuth = request.cookies.get('admin_auth')
@@ -24,5 +32,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/live-broadcast', '/admin/dashboard/:path*'],
+  matcher: ['/live-broadcast', '/access', '/admin/dashboard/:path*'],
 }
