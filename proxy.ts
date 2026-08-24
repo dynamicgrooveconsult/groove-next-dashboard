@@ -1,19 +1,30 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { getBroadcastIsPrivate } from '@/lib/broadcastPrivacy'
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Protect live broadcast route
+  // Protect live broadcast route (only when privacy mode is on)
   if (pathname === '/live-broadcast') {
-    const auth = request.cookies.get('broadcast_auth')
-    if (!auth || auth.value !== 'granted') {
-      return NextResponse.redirect(new URL('/access', request.url))
+    const isPrivate = await getBroadcastIsPrivate()
+
+    if (isPrivate) {
+      const auth = request.cookies.get('broadcast_auth')
+      if (!auth || auth.value !== 'granted') {
+        return NextResponse.redirect(new URL('/access', request.url))
+      }
     }
   }
 
   // Already-authenticated visitors should never see the access gate again
   if (pathname === '/access') {
+    const isPrivate = await getBroadcastIsPrivate()
+    if (!isPrivate) {
+      // Broadcast is public: there is nothing to unlock, go straight to the stream
+      return NextResponse.redirect(new URL('/live-broadcast', request.url))
+    }
+
     const auth = request.cookies.get('broadcast_auth')
     if (auth && auth.value === 'granted') {
       return NextResponse.redirect(new URL('/live-broadcast', request.url))
