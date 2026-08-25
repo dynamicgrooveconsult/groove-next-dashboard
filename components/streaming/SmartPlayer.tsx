@@ -6,7 +6,11 @@ import 'video.js/dist/video-js.css'
 import { useStreamStore } from '@/lib/store'
 import StandbyOverlay from './StandbyOverlay'
 
-export default function SmartPlayer() {
+interface SmartPlayerProps {
+  lowQuality?: boolean
+}
+
+export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const playerRef = useRef<any>(null)
   const [localLive, setLocalLive] = useState(false)
@@ -43,6 +47,7 @@ export default function SmartPlayer() {
           enableLowInitialPlaylist: true, // ✅ Faster initial segment
           smoothQualityChange: true,
           overrideNative: true,
+          ...(lowQuality && { bandwidth: 1000000 }), // cap at ~1 Mbps for admin preview
         },
       },
       sources: [
@@ -82,7 +87,7 @@ export default function SmartPlayer() {
         playerRef.current = null
       }
     }
-  }, [activeSource, hlsUrl, setIsLive])
+  }, [activeSource, hlsUrl, setIsLive, lowQuality])
 
   return (
     <div className="absolute inset-0">

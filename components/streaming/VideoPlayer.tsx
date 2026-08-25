@@ -80,7 +80,11 @@ function GuestProtected() {
   )
 }
 
-export default function VideoPlayer() {
+interface VideoPlayerProps {
+  lowQuality?: boolean
+}
+
+export default function VideoPlayer({ lowQuality = false }: VideoPlayerProps) {
   const { activeSource, youtubeId, isChannel, facebookInput } = useStreamStore()
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -121,7 +125,7 @@ export default function VideoPlayer() {
       className="relative w-auto mx-auto aspect-video max-h-[70vh] rounded-xl overflow-hidden bg-black border border-zinc-800 shadow-2xl"
       style={{ maxWidth: 'min(72rem, 100%, calc(70vh * 16 / 9))' }}
     >
-      {activeSource === 'hls' && <SmartPlayer />}
+      {activeSource === 'hls' && <SmartPlayer lowQuality={lowQuality} />}
 
       {activeSource === 'youtube' &&
         (youtubeEmbed ? (
