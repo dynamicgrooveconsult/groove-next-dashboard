@@ -25,7 +25,7 @@ export default function IndustriesServed() {
           <p className="text-yellow-500 text-xs tracking-widest uppercase mb-4">
             Industries We Serve
           </p>
-          <h2 className="text-4xl font-bold text-white">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white">
             Who We Serve
           </h2>
         </motion.div>

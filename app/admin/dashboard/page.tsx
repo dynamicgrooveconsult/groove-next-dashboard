@@ -5,6 +5,16 @@ import { useToast } from '@/components/Toast'
 
 const PRIVACY_KEY = 'broadcast_is_private'
 
+async function fetchWithTimeout(url: string, init: RequestInit = {}, timeoutMs = 8000) {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    return await fetch(url, { ...init, signal: controller.signal })
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 export default function AdminDashboard() {
   const [broadcastCode, setBroadcastCodeState] = useState('')
   const [guestCode, setGuestCodeState] = useState('')
@@ -13,7 +23,7 @@ export default function AdminDashboard() {
   const { showToast, ToastComponent } = useToast()
 
   useEffect(() => {
-    fetch('/api/cms/content?section=broadcast')
+    fetchWithTimeout('/api/cms/content?section=broadcast')
       .then((r) => r.json())
       .then((data: { key?: string; value?: string }[]) => {
         if (Array.isArray(data)) {
@@ -34,7 +44,7 @@ export default function AdminDashboard() {
     setSavingPrivacy(true)
 
     try {
-      const res = await fetch('/api/cms/content', {
+      const res = await fetchWithTimeout('/api/cms/content', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -43,7 +53,7 @@ export default function AdminDashboard() {
         }),
       })
 
-      if (!res.ok) throw new Error('Save failed')
+      if (!res.ok) throw new Error(`Save failed with status ${res.status}`)
 
       showToast(
         nextPrivate
@@ -60,13 +70,13 @@ export default function AdminDashboard() {
 
   const updateCodes = async () => {
     try {
-      await fetch('/api/update-broadcast-code', {
+      await fetchWithTimeout('/api/update-broadcast-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newCode: broadcastCode }),
       })
 
-      await fetch('/api/update-guest-code', {
+      await fetchWithTimeout('/api/update-guest-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newCode: guestCode }),

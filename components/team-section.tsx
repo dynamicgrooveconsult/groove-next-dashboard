@@ -33,14 +33,13 @@ export default async function TeamSection() {
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, color: '#ffffff', marginBottom: '16px' }}>The People Behind the Lens</h2>
           <p style={{ color: 'rgba(255,255,255,0.8)', maxWidth: '500px', margin: '0 auto' }}>Meet the crew that makes every production extraordinary.</p>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {cards.map((m, i) => (
-            <div key={i} style={{ textAlign: 'center' }}>
-              <div style={{ aspectRatio: '3/4', background: 'rgba(5,5,5,0.75)', backdropFilter: 'blur(8px)', borderRadius: '12px', marginBottom: '16px', overflow: 'hidden', position: 'relative', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div key={i} className="text-center">
+              <div style={{ aspectRatio: '3/4', background: 'rgba(5,5,5,0.75)', backdropFilter: 'blur(8px)', borderRadius: '12px', overflow: 'hidden', position: 'relative', border: '1px solid rgba(255,255,255,0.08)' }}>
                 {m && m.image_url && (
                   <img src={m.image_url} alt={m.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                 )}
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #050505, transparent)', zIndex: 10 }} />
                 {(!m || !m.image_url) && (
                   <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <svg viewBox="0 0 24 24" fill="currentColor" style={{ width: '48px', height: '48px', color: 'rgba(255,255,255,0.15)' }}>
@@ -48,11 +47,9 @@ export default async function TeamSection() {
                     </svg>
                   </div>
                 )}
-                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px', zIndex: 20, textAlign: 'left' }}>
-                  <h3 style={{ color: '#ffffff', fontWeight: 700, fontSize: '13px', margin: 0, opacity: m ? 1 : 0.3 }}>{m ? m.name : 'Loading...'}</h3>
-                  <p style={{ color: '#c9a96e', fontSize: '11px', margin: '4px 0 0', opacity: m ? 1 : 0.3 }}>{m ? m.role : 'Fetching data'}</p>
-                </div>
               </div>
+              <h3 className="text-white font-bold text-sm mt-4 mb-1">{m ? m.name : 'Loading...'}</h3>
+              <p className="text-xs" style={{ color: '#c9a96e' }}>{m ? m.role : 'Fetching data'}</p>
             </div>
           ))}
         </div>

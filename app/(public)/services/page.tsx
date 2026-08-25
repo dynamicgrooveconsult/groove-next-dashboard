@@ -81,7 +81,7 @@ export default function ServicesPage() {
             Our Services
           </p>
 
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-6">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold mb-6">
             Multimedia Production
             <br />
             <span className="text-yellow-500">
@@ -159,7 +159,7 @@ export default function ServicesPage() {
             Pricing Plans
           </p>
 
-          <h2 className="text-4xl font-bold mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-16">
             Flexible Packages for Every Event
           </h2>
 

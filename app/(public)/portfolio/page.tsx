@@ -61,7 +61,7 @@ export default function PortfolioPage() {
             Featured Projects
           </p>
 
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-6">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold mb-6">
             Our Work Speaks
             <br />
             <span className="text-yellow-500">

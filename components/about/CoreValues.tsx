@@ -40,7 +40,7 @@ export default function CoreValues() {
             Our Core Values
           </p>
 
-          <h2 className="text-4xl font-bold mb-14">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-14">
             What Drives Us
           </h2>
         </motion.div>

@@ -38,7 +38,7 @@ export default function CompanyStory() {
             About Dynamic Groove Media
           </p>
 
-          <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-8">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-8">
             Premier Multimedia <br />
             <span className="text-yellow-500">
               Production & Broadcasting

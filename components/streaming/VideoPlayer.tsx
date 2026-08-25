@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useStreamStore } from '@/lib/store'
 import SmartPlayer from './SmartPlayer'
 import StandbyOverlay from './StandbyOverlay'
+import FullscreenButton from './FullscreenButton'
 
 const ROOM_NAME = 'DYNAMIC_GROOVE'
 const ROOM_PASSWORD = 'YOUR_PASSWORD'
@@ -81,6 +82,7 @@ function GuestProtected() {
 
 export default function VideoPlayer() {
   const { activeSource, youtubeId, isChannel, facebookInput } = useStreamStore()
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const getYouTubeEmbed = () => {
     if (!youtubeId) return null
@@ -115,6 +117,7 @@ export default function VideoPlayer() {
 
   return (
     <div
+      ref={containerRef}
       className="relative w-auto mx-auto aspect-video max-h-[70vh] rounded-xl overflow-hidden bg-black border border-zinc-800 shadow-2xl"
       style={{ maxWidth: 'min(72rem, 100%, calc(70vh * 16 / 9))' }}
     >
@@ -145,6 +148,8 @@ export default function VideoPlayer() {
         ))}
 
       {activeSource === 'guest' && <GuestProtected />}
+
+      <FullscreenButton containerRef={containerRef} />
     </div>
   )
 }

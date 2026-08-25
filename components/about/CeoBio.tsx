@@ -90,7 +90,7 @@ export default function CeoBio() {
             Leadership
           </p>
 
-          <h2 className="text-4xl font-bold mb-2">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-2">
             {name}
           </h2>
 

@@ -27,7 +27,7 @@ export default function Technology() {
           <p className="text-yellow-500 text-xs tracking-widest uppercase mb-4">
             Production Technology
           </p>
-          <h2 className="text-4xl font-bold text-white">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white">
             Our Equipment &amp; Capabilities
           </h2>
           <p className="text-lg text-zinc-400 mt-4 max-w-3xl">

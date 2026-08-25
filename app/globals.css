@@ -41,6 +41,13 @@ body {
   .animate-fadeIn {
     animation: fadeIn 0.5s ease-out forwards;
   }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* video.js: fill the 16:9 player frame with the video feed (no letterboxing).

@@ -22,7 +22,7 @@ export default function GalleryPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black" />
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <p className="text-xs uppercase tracking-widest text-cyan-400 mb-3">Past Events</p>
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
             Event <em className="text-cyan-400 not-italic">Gallery</em>
           </h1>
           <p className="text-zinc-400 max-w-2xl mx-auto">
