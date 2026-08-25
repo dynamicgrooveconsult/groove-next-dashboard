@@ -50,11 +50,12 @@ body {
   }
 }
 
-/* video.js: fill the 16:9 player frame with the video feed (no letterboxing).
-   Source is OBS at native 1920x1080, so cover maps cleanly with no cropping. */
+/* video.js: show the full original frame without cropping.
+   contain adds letterbox/pillarbox bars when the container and video
+   aspect ratios don't match, rather than cropping content to fill. */
 .video-js .vjs-tech,
 .video-js.vjs-tech {
-  object-fit: cover;
+  object-fit: contain;
 }
 
 ::-webkit-scrollbar {

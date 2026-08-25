@@ -26,7 +26,7 @@ export default function SmartPlayer() {
 
     const videoElement = document.createElement('video')
     videoElement.className =
-      'video-js vjs-big-play-centered object-cover w-full h-full'
+      'video-js vjs-big-play-centered object-contain w-full h-full'
     videoElement.setAttribute('playsinline', 'true')
     videoElement.setAttribute('muted', 'true') // ✅ helps autoplay instantly
 
