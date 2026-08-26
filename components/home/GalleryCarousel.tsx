@@ -53,7 +53,7 @@ export default function HomeGalleryCarousel() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
           className="flex gap-4 animate-marquee"
-          style={{ animationDuration: '5s', width: 'max-content' }}
+          style={{ width: 'max-content' }}
           onMouseEnter={(e) => { e.currentTarget.style.animationPlayState = 'paused' }}
           onMouseLeave={(e) => { e.currentTarget.style.animationPlayState = 'running' }}
         >
