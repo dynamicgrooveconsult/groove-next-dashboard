@@ -50,6 +50,13 @@ export default function HomePage() {
     setCurrentSlide(prev => (prev - 1 + recentProductions.length) % recentProductions.length)
   }
 
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % recentProductions.length)
+    }, 3500)
+    return () => clearInterval(id)
+  }, [])
+
   const heroTitle = hero.title || 'Premium Multimedia Production'
   const heroSubtitle = hero.subtitle || 'Bringing Events to Life Through Cinematic Media & Live Broadcasting'
   const heroDescription = hero.description || 'Professional multimedia production, live streaming, photography, and event technology solutions designed to connect experiences with global audiences.'

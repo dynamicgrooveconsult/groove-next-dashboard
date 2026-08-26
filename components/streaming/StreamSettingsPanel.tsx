@@ -74,7 +74,7 @@ export default function StreamSettingsPanel() {
 
       <div>
         <label className="text-xs text-zinc-400 uppercase">
-          Native HLS URL
+          Direct Stream URL
         </label>
         <input
           value={draft.hlsUrl}

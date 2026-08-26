@@ -92,7 +92,7 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
   return (
     <div className="absolute inset-0">
       <div ref={containerRef} className="w-full h-full" />
-      {!localLive && <StandbyOverlay label="Native HLS" />}
+      {!localLive && <StandbyOverlay label="Direct Stream" />}
     </div>
   )
 }
