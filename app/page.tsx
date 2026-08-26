@@ -105,7 +105,7 @@ export default async function HomePage() {
       <HomeGalleryCarousel />
 
       {/* Page Background Video (non-hero sections) */}
-      <div className="relative">
+      <div className="relative overflow-hidden">
         <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0 opacity-40">
           <source src="/background/vid two.mp4" type="video/mp4" />
         </video>
