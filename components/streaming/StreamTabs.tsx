@@ -3,7 +3,7 @@
 import { useStreamStore } from '@/lib/store'
 
 const tabs = [
-  { key: 'hls', label: 'NATIVE HLS' },
+  { key: 'hls', label: 'DIRECT STREAM' },
   { key: 'youtube', label: 'YOUTUBE LIVE' },
   { key: 'facebook', label: 'FACEBOOK LIVE' },
   { key: 'guest', label: 'GUEST INTERVIEW' },
