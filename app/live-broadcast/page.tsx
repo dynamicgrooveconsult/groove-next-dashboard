@@ -18,7 +18,15 @@ export default function LiveBroadcastPage() {
     <div className="min-h-screen bg-[#050505] text-white p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* HEADER */}
-        <div className="border-b border-zinc-800 pb-4 flex items-center gap-4">
+        <div className="border-b border-zinc-800 pb-4">
+          <StreamTabs />
+        </div>
+
+        {/* VIDEO PANEL */}
+        <VideoPlayer />
+
+        {/* HOME NAVIGATION */}
+        <div className="flex justify-center pt-2">
           <Link
             href="/"
             className="flex items-center gap-2 text-zinc-400 hover:text-yellow-500 transition-colors"
@@ -29,11 +37,7 @@ export default function LiveBroadcastPage() {
             </svg>
             <span className="text-sm font-semibold uppercase">Home</span>
           </Link>
-          <StreamTabs />
         </div>
-
-        {/* VIDEO PANEL */}
-        <VideoPlayer />
       </div>
     </div>
   )
