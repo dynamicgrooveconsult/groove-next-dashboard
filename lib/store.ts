@@ -66,7 +66,8 @@ export const useStreamStore = create<StreamStore>((set) => ({
   youtubeId: '',
   isChannel: true,
   facebookInput: '',
-  hlsUrl: 'http://127.0.0.1:8585/hls/stream.m3u8',
+  // Updated to use your production Cloudflare tunnel domain
+  hlsUrl: 'https://stream.dynamicgrooveconsult.com/hls/stream.m3u8',
   isProducerMode: false,
   analytics: defaultAnalytics,
   setActiveSource: (source) => set({ activeSource: source }),
