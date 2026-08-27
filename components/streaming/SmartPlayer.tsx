@@ -10,7 +10,6 @@ interface SmartPlayerProps {
   lowQuality?: boolean
 }
 
-// Fallback default stream URL pointing to your working NGINX Cloudflare tunnel
 const DEFAULT_HLS_URL = 'https://stream.dynamicgrooveconsult.com/hls/stream.m3u8'
 
 export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
@@ -19,46 +18,45 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
   const [localLive, setLocalLive] = useState(false)
 
   const { activeSource, setIsLive, hlsUrl } = useStreamStore()
-
-  // Use store url if available, otherwise fallback to default working stream
   const activeHlsUrl = hlsUrl || DEFAULT_HLS_URL
 
   useEffect(() => {
     if (activeSource !== 'hls') return
     if (!containerRef.current) return
 
-    // ✅ Clean previous instance safely
     if (playerRef.current) {
       playerRef.current.dispose()
       playerRef.current = null
     }
 
     const videoElement = document.createElement('video')
+    // ✅ Updated layout sizing classes to prevent mobile cropping and distortion
     videoElement.className =
-      'video-js vjs-big-play-centered object-contain w-full h-full'
+      'video-js vjs-big-play-centered object-contain w-full h-full bg-black'
     videoElement.setAttribute('playsinline', 'true')
+    videoElement.setAttribute('webkit-playsinline', 'true')
 
     containerRef.current.innerHTML = ''
     containerRef.current.appendChild(videoElement)
 
     const player = videojs(videoElement, {
       autoplay: true,
-      muted: false, // ✅ Explicitly unmuted so audio outputs immediately
+      muted: false,
       controls: true,
       preload: 'auto',
       liveui: true,
+      fluid: false, // Ensures layout container handles scaling smoothly
       html5: {
         vhs: {
           enableLowInitialPlaylist: true,
           smoothQualityChange: true,
           overrideNative: true,
-          // Only cap bandwidth if explicitly requested for low-quality admin preview
           ...(lowQuality && { bandwidth: 1000000 }),
         },
       },
       sources: [
         {
-          src: activeHlsUrl + '?t=' + Date.now(), // ✅ Avoid cache delay
+          src: activeHlsUrl + '?t=' + Date.now(),
           type: 'application/x-mpegURL',
         },
       ],
@@ -66,19 +64,16 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
 
     playerRef.current = player
 
-    // ✅ Ensure volume is up once player is ready
     player.ready(() => {
       player.muted(false)
       player.volume(1.0)
     })
 
-    // ✅ When stream starts
     player.on('playing', () => {
       setLocalLive(true)
       setIsLive(true)
     })
 
-    // ✅ Auto-retry quickly if playlist not ready
     player.on('error', () => {
       setLocalLive(false)
       setIsLive(false)
@@ -103,8 +98,8 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
   }, [activeSource, activeHlsUrl, setIsLive, lowQuality])
 
   return (
-    <div className="absolute inset-0">
-      <div ref={containerRef} className="w-full h-full" />
+    <div className="absolute inset-0 overflow-hidden bg-black">
+      <div ref={containerRef} className="w-full h-full relative" />
       {!localLive && <StandbyOverlay label="Direct Stream" />}
     </div>
   )
