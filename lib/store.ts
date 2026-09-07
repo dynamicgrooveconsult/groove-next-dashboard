@@ -24,6 +24,7 @@ interface StreamStore {
   isLive: boolean
   isStandby: boolean
   streamTitle: string
+  hlsUrl: string
   youtubeId: string
   isChannel: boolean
   facebookInput: string
@@ -32,6 +33,7 @@ interface StreamStore {
   setActiveSource: (source: StreamSource | null) => void
   setIsLive: (live: boolean) => void
   setStreamTitle: (title: string) => void
+  setHlsUrl: (url: string) => void
   setYoutubeId: (id: string) => void
   setIsChannel: (channel: boolean) => void
   setFacebookInput: (input: string) => void
@@ -68,6 +70,7 @@ export const useStreamStore = create<StreamStore>((set) => ({
   isLive: false,
   isStandby: true,
   streamTitle: 'Live Broadcast',
+  hlsUrl: '',
   youtubeId: '',
   isChannel: true,
   facebookInput: '',
@@ -81,6 +84,7 @@ export const useStreamStore = create<StreamStore>((set) => ({
       ...(live && { activeSource: 'hls' }),
     }),
   setStreamTitle: (title) => set({ streamTitle: title }),
+  setHlsUrl: (url) => set({ hlsUrl: url }),
   setYoutubeId: (id) => set({ youtubeId: id }),
   setIsChannel: (channel) => set({ isChannel: channel }),
   setFacebookInput: (input) => set({ facebookInput: input }),
