@@ -6,57 +6,51 @@ import 'video.js/dist/video-js.css'
 import { useStreamStore } from '@/lib/store'
 import StandbyOverlay from './StandbyOverlay'
 
-interface SmartPlayerProps {
-  lowQuality?: boolean
-}
+const HLS_STREAM_URL = 'http://127.0.0.1:8585/hls/stream.m3u8'
 
-const DEFAULT_HLS_URL = 'https://stream.dynamicgrooveconsult.com/hls/stream.m3u8'
-
-export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
+export default function SmartPlayer() {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const playerRef = useRef<any>(null)
   const [localLive, setLocalLive] = useState(false)
 
-  const { activeSource, setIsLive, hlsUrl } = useStreamStore()
-  const activeHlsUrl = hlsUrl || DEFAULT_HLS_URL
+  const { activeSource, setIsLive } = useStreamStore()
 
   useEffect(() => {
     if (activeSource !== 'hls') return
     if (!containerRef.current) return
 
+    // ✅ Clean previous instance safely
     if (playerRef.current) {
       playerRef.current.dispose()
       playerRef.current = null
     }
 
     const videoElement = document.createElement('video')
-    // ✅ Updated layout sizing classes to prevent mobile cropping and distortion
     videoElement.className =
-      'video-js vjs-big-play-centered object-contain w-full h-full bg-black'
+      'video-js vjs-big-play-centered w-full h-full'
     videoElement.setAttribute('playsinline', 'true')
-    videoElement.setAttribute('webkit-playsinline', 'true')
+    videoElement.setAttribute('muted', 'true') // ✅ helps autoplay instantly
 
     containerRef.current.innerHTML = ''
     containerRef.current.appendChild(videoElement)
 
     const player = videojs(videoElement, {
       autoplay: true,
-      muted: false,
       controls: true,
-      preload: 'auto',
+      responsive: true,
+      fluid: true,
+      preload: 'metadata', // ✅ Faster startup
       liveui: true,
-      fluid: false, // Ensures layout container handles scaling smoothly
       html5: {
         vhs: {
-          enableLowInitialPlaylist: true,
+          enableLowInitialPlaylist: true, // ✅ Faster initial segment
           smoothQualityChange: true,
           overrideNative: true,
-          ...(lowQuality && { bandwidth: 1000000 }),
         },
       },
       sources: [
         {
-          src: activeHlsUrl + '?t=' + Date.now(),
+          src: HLS_STREAM_URL + '?t=' + Date.now(), // ✅ Avoid cache delay
           type: 'application/x-mpegURL',
         },
       ],
@@ -64,16 +58,13 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
 
     playerRef.current = player
 
-    player.ready(() => {
-      player.muted(false)
-      player.volume(1.0)
-    })
-
+    // ✅ When stream starts
     player.on('playing', () => {
       setLocalLive(true)
       setIsLive(true)
     })
 
+    // ✅ Auto-retry quickly if playlist not ready
     player.on('error', () => {
       setLocalLive(false)
       setIsLive(false)
@@ -82,11 +73,10 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
         if (!playerRef.current) return
 
         playerRef.current.src({
-          src: activeHlsUrl + '?t=' + Date.now(),
+          src: HLS_STREAM_URL + '?t=' + Date.now(),
           type: 'application/x-mpegURL',
         })
-        playerRef.current.load()
-      }, 2000)
+      }, 2000) // ✅ Faster retry
     })
 
     return () => {
@@ -95,12 +85,12 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
         playerRef.current = null
       }
     }
-  }, [activeSource, activeHlsUrl, setIsLive, lowQuality])
+  }, [activeSource, setIsLive])
 
   return (
-    <div className="absolute inset-0 overflow-hidden bg-black">
-      <div ref={containerRef} className="w-full h-full relative" />
-      {!localLive && <StandbyOverlay label="Direct Stream" />}
+    <div className="relative w-full h-full">
+      <div ref={containerRef} className="w-full h-full" />
+      {!localLive && <StandbyOverlay label="Native HLS" />}
     </div>
   )
 }
