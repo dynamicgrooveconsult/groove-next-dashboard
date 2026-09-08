@@ -22,6 +22,7 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
   const playerRef = useRef<ReturnType<typeof videojs> | null>(null)
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [localLive, setLocalLive] = useState(false)
+  const [isMuted, setIsMuted] = useState(true)
 
   const activeSource = useStreamStore((s) => s.activeSource)
   const hlsUrl = useStreamStore((s) => s.hlsUrl)
@@ -47,6 +48,7 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
     }
     containerRef.current.innerHTML = ''
     setLocalLive(false)
+    setIsMuted(true)
 
     const videoElement = document.createElement('video')
     videoElement.className = 'video-js vjs-big-play-centered w-full h-full bg-black'
@@ -60,8 +62,11 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
     containerRef.current.appendChild(videoElement)
 
     const player = videojs(videoElement, {
+      // Start muted so Chrome/most browsers allow instant autoplay —
+      // sound is enabled via the "Tap to unmute" overlay below, which
+      // counts as a user gesture Chrome requires for audible playback.
       autoplay: true,
-      muted: false,
+      muted: true,
       controls: true,
       preload: 'auto',
       liveui: true,
@@ -106,7 +111,7 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
     }
 
     player.ready(() => {
-      player.muted(false)
+      player.muted(true)
       player.volume(1.0)
 
       const techEl = player.el().querySelector('video') as HTMLVideoElement | null
@@ -127,6 +132,12 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
       setIsLive(true)
     })
 
+    // Keep our unmute-button state in sync if the viewer uses video.js's
+    // own built-in mute control in the control bar.
+    player.on('volumechange', () => {
+      setIsMuted(player.muted() ?? true)
+    })
+
     player.on('error', scheduleRetry)
 
     return () => {
@@ -138,9 +149,38 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
     }
   }, [activeSource, activeHlsUrl, setIsLive, lowQuality])
 
+  const handleUnmute = () => {
+    const player = playerRef.current
+    if (!player) return
+    player.muted(false)
+    player.volume(1.0)
+    setIsMuted(false)
+    // Some browsers need an explicit play() call right after the
+    // gesture-driven unmute to keep playback going smoothly.
+    const playPromise = player.play()
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // If it still fails, leave state as-is — control bar's own
+        // play/mute buttons remain available as a fallback.
+      })
+    }
+  }
+
   return (
     <div className="absolute inset-0 overflow-hidden bg-black">
       <div ref={containerRef} className="w-full h-full relative" />
+
+      {localLive && isMuted && (
+        <button
+          onClick={handleUnmute}
+          className="absolute inset-0 z-10 flex items-center justify-center"
+        >
+          <span className="flex items-center gap-2 rounded-full bg-black/70 hover:bg-black/85 text-white px-6 py-3 text-base font-semibold backdrop-blur-sm border border-white/20 transition-colors shadow-lg">
+            🔇 Tap to unmute
+          </span>
+        </button>
+      )}
+
       {!localLive && <StandbyOverlay label="Direct Stream" />}
     </div>
   )
