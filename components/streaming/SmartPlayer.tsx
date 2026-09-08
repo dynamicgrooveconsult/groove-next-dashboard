@@ -170,6 +170,18 @@ export default function SmartPlayer({ lowQuality = false }: SmartPlayerProps) {
     <div className="absolute inset-0 overflow-hidden bg-black">
       <div ref={containerRef} className="w-full h-full relative" />
 
+      {localLive && (
+        <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 rounded-full bg-red-600 pl-2 pr-3 py-1 shadow-lg">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+          </span>
+          <span className="text-white text-xs font-bold tracking-wide">
+            LIVE
+          </span>
+        </div>
+      )}
+
       {localLive && isMuted && (
         <button
           onClick={handleUnmute}
