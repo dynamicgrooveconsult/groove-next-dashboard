@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import FeaturedEventSection from '@/components/home/FeaturedEventSection'
 
 const teamMembers = [
   { name: 'Tunde Adebayo', role: 'Lead Producer', photo: '/static/images/team/tunde.jpg', bio: '15+ years in broadcast and live event production.' },
@@ -50,13 +51,6 @@ export default function HomePage() {
     setCurrentSlide(prev => (prev - 1 + recentProductions.length) % recentProductions.length)
   }
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % recentProductions.length)
-    }, 3500)
-    return () => clearInterval(id)
-  }, [])
-
   const heroTitle = hero.title || 'Premium Multimedia Production'
   const heroSubtitle = hero.subtitle || 'Bringing Events to Life Through Cinematic Media & Live Broadcasting'
   const heroDescription = hero.description || 'Professional multimedia production, live streaming, photography, and event technology solutions designed to connect experiences with global audiences.'
@@ -80,7 +74,7 @@ export default function HomePage() {
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             {heroSubtitle}
           </p>
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-tight mb-6">
+          <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight mb-6">
             {heroTitle}
           </h1>
           <p className="text-lg text-zinc-400 max-w-2xl mx-auto mb-10">
@@ -102,6 +96,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <FeaturedEventSection />
+
       {/* Stats Section */}
       <section className="py-20 px-6 bg-zinc-900">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -112,7 +108,7 @@ export default function HomePage() {
             { key: 'years_experience', label: 'Years of Experience', default: '10+' },
           ].map(s => (
             <div key={s.key}>
-              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-cyan-400 mb-2">{stats[s.key] || s.default}</div>
+              <div className="text-4xl md:text-5xl font-bold text-cyan-400 mb-2">{stats[s.key] || s.default}</div>
               <div className="text-sm text-zinc-500 uppercase tracking-widest">{s.label}</div>
             </div>
           ))}
@@ -145,7 +141,7 @@ export default function HomePage() {
       <section className="py-24 px-6 bg-black">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">Recent Productions</h2>
+            <h2 className="text-4xl font-bold text-white mb-3">Recent Productions</h2>
             <p className="text-zinc-400">A selection of our most recent live & studio work.</p>
           </div>
           <div className="relative">
@@ -177,7 +173,7 @@ export default function HomePage() {
       {/* Homepage CTA */}
       <section className="py-24 px-6 bg-zinc-900">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">{cta.title || "Let's Create Something Exceptional"}</h2>
+          <h2 className="text-4xl font-bold text-white mb-4">{cta.title || "Let's Create Something Exceptional"}</h2>
           <p className="text-zinc-400 text-lg mb-8">{cta.description || 'Ready to elevate your next event or media project? Partner with Dynamic Groove Media.'}</p>
           <Link href={cta.button_link || '/contact'} className="inline-flex items-center gap-2 bg-cyan-400 hover:bg-cyan-300 text-black font-bold px-8 py-3 rounded-full transition-all">
             {cta.button_text || 'Contact Us Today'}
@@ -190,7 +186,7 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto bg-zinc-800/50 border border-zinc-700 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center">
           <div className="flex-1">
             <p className="text-xs uppercase tracking-widest text-zinc-500 mb-2">Featured Partner</p>
-            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">Your Brand. Our Platform.</h3>
+            <h3 className="text-3xl font-bold text-white mb-3">Your Brand. Our Platform.</h3>
             <p className="text-zinc-400 mb-6">Partner with Dynamic Groove for white-label live broadcasts reaching thousands on your custom domain — zero YouTube branding.</p>
             <Link href="/contact" className="inline-flex items-center gap-2 bg-cyan-400 hover:bg-cyan-300 text-black font-bold px-6 py-2.5 rounded-full transition-all text-sm">Enquire About Partnership</Link>
           </div>
@@ -207,7 +203,7 @@ export default function HomePage() {
       <section className="py-24 px-6 bg-zinc-900">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">Our Team</h2>
+            <h2 className="text-4xl font-bold text-white mb-3">Our Team</h2>
             <p className="text-zinc-400">The crew behind the lens — and behind the stream.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
