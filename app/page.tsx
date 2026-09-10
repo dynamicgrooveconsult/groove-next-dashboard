@@ -2,6 +2,7 @@ import Link from 'next/link'
 import TeamSection from '@/components/team-section'
 import HomeGalleryCarousel from '@/components/home/GalleryCarousel'
 import SiteFooter from '@/components/SiteFooter'
+import FeaturedEventSection from '@/components/home/FeaturedEventSection'
 import { supabase } from '@/utils/supabase/server'
 
 export const dynamic = 'force-dynamic'
@@ -100,6 +101,9 @@ export default async function HomePage() {
           <div className="w-px h-8 bg-zinc-600 mx-auto mt-2 animate-pulse" />
         </div>
       </section>
+
+      {/* Featured Homepage Event */}
+      <FeaturedEventSection />
 
       {/* Gallery Carousel */}
       <HomeGalleryCarousel />
