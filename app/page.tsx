@@ -4,6 +4,17 @@ import HomeGalleryCarousel from '@/components/home/GalleryCarousel'
 import SiteFooter from '@/components/SiteFooter'
 import FeaturedEventSection from '@/components/home/FeaturedEventSection'
 import { supabase } from '@/utils/supabase/server'
+import {
+  Award,
+  ShieldCheck,
+  Sparkles,
+  Users,
+  Cpu,
+  Video,
+  MonitorPlay,
+  Globe2,
+  Quote,
+} from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,11 +27,11 @@ const stats = [
 ]
 
 const whyChooseUs = [
-  { title: 'Professional Excellence', description: 'Every project is handled with the highest standards of quality and professionalism from start to finish.' },
-  { title: 'Reliable Live Broadcasting', description: 'Redundant systems, backup power, and failover streaming ensure your event never goes offline.' },
-  { title: 'Creative Storytelling', description: 'We don\'t just capture events — we craft compelling narratives that resonate with your audience.' },
-  { title: 'Client-Focused Approach', description: 'Your vision guides every decision. We collaborate closely to bring your creative brief to life.' },
-  { title: 'Modern Production Technology', description: 'Industry-leading cameras, audio equipment, and streaming infrastructure for pristine production value.' },
+  { icon: Award, title: 'Professional Excellence', description: 'Every project is handled with the highest standards of quality and professionalism from start to finish.' },
+  { icon: ShieldCheck, title: 'Reliable Live Broadcasting', description: 'Redundant systems, backup power, and failover streaming ensure your event never goes offline.' },
+  { icon: Sparkles, title: 'Creative Storytelling', description: 'We don\'t just capture events — we craft compelling narratives that resonate with your audience.' },
+  { icon: Users, title: 'Client-Focused Approach', description: 'Your vision guides every decision. We collaborate closely to bring your creative brief to life.' },
+  { icon: Cpu, title: 'Modern Production Technology', description: 'Industry-leading cameras, audio equipment, and streaming infrastructure for pristine production value.' },
 ]
 
 const processSteps = [
@@ -39,6 +50,12 @@ const equipment = [
   'Studio-grade audio systems',
   'Real-time broadcast monitoring',
   'Professional lighting solutions',
+]
+
+const broadcastFeatures = [
+  { icon: Video, title: 'Multi-Camera Switching', desc: 'Seamless live switching between 3–8 camera angles for dynamic, professional broadcasts.' },
+  { icon: MonitorPlay, title: 'Real-Time Monitoring', desc: 'Live preview, audio metering, and signal monitoring to ensure flawless delivery.' },
+  { icon: Globe2, title: 'Global Streaming', desc: 'Stream to YouTube, Facebook, Vimeo, or custom HLS endpoints with adaptive bitrate.' },
 ]
 
 export default async function HomePage() {
@@ -117,9 +134,14 @@ export default async function HomePage() {
         <div className="relative z-10">
 
       {/* Brand Intro */}
-      <section className="py-24 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-xs uppercase tracking-[0.25em] text-yellow-500 mb-4">About</p>
+      <section className="relative py-24 px-6 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-yellow-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="relative max-w-4xl mx-auto text-center">
+          <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-yellow-500 mb-4">
+            <span className="w-6 h-px bg-yellow-500" />
+            About
+            <span className="w-6 h-px bg-yellow-500" />
+          </p>
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Dynamic Groove Media</h2>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-3xl mx-auto">
             Dynamic Groove Media is a Lagos-based multimedia production and live broadcasting company
@@ -130,16 +152,20 @@ export default async function HomePage() {
       </section>
 
       {/* Impact Statistics */}
-      <section className="py-20 px-6 border-t border-yellow-500/10 border-b border-yellow-500/10">
+      <section className="py-20 px-6 border-t border-yellow-500/10 border-b border-yellow-500/10 bg-gradient-to-b from-transparent via-yellow-500/[0.02] to-transparent">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-xs uppercase tracking-[0.25em] text-yellow-500 mb-2">By the Numbers</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white">Our Impact</h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {stats.map((stat, i) => (
-              <div key={i} className="text-center p-6 bg-[#111111] rounded-lg border border-yellow-500/10 hover:border-yellow-500/30 transition-all duration-300">
-                <p className="text-2xl md:text-3xl font-bold text-yellow-500 mb-2">{stat.value}</p>
+              <div
+                key={i}
+                className="group relative text-center p-6 bg-gradient-to-b from-[#141414] to-[#0d0d0d] rounded-xl border border-yellow-500/10 hover:border-yellow-500/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_-8px_rgba(234,179,8,0.35)]"
+              >
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <p className="text-2xl md:text-3xl font-bold bg-gradient-to-b from-yellow-400 to-yellow-600 bg-clip-text text-transparent mb-2">{stat.value}</p>
                 <p className="text-sm text-zinc-400 uppercase tracking-[0.05em]">{stat.label}</p>
               </div>
             ))}
@@ -151,32 +177,45 @@ export default async function HomePage() {
       <section className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs uppercase tracking-[0.25em] text-yellow-500 mb-4">Why Choose Us</p>
+            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-yellow-500 mb-4">
+              <span className="w-6 h-px bg-yellow-500" />
+              Why Choose Us
+              <span className="w-6 h-px bg-yellow-500" />
+            </p>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Built for Excellence</h2>
             <p className="text-zinc-400 max-w-2xl mx-auto">What sets Dynamic Groove Media apart from the rest.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {whyChooseUs.map((item, i) => (
-              <div
-                key={i}
-                className="p-8 bg-[#111111] rounded-lg border border-yellow-500/10 hover:border-yellow-500/30 transition-all duration-300 group"
-              >
-                <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-yellow-500/10 text-yellow-500 text-lg font-bold mb-5 group-hover:bg-yellow-500/20 transition-all duration-300">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                <p className="text-zinc-400 leading-relaxed">{item.description}</p>
-              </div>
-            ))}
+            {whyChooseUs.map((item, i) => {
+              const Icon = item.icon
+              return (
+                <div
+                  key={i}
+                  className="relative p-8 bg-gradient-to-b from-[#141414] to-[#0d0d0d] rounded-xl border border-yellow-500/10 hover:border-yellow-500/40 transition-all duration-300 group overflow-hidden hover:-translate-y-1 hover:shadow-[0_0_30px_-8px_rgba(234,179,8,0.3)]"
+                >
+                  <div className="absolute -right-6 -top-6 w-24 h-24 bg-yellow-500/5 rounded-full blur-2xl group-hover:bg-yellow-500/15 transition-all duration-500" />
+                  <span className="relative inline-flex items-center justify-center w-12 h-12 rounded-xl bg-yellow-500/10 text-yellow-500 mb-5 group-hover:bg-yellow-500/20 group-hover:scale-110 transition-all duration-300">
+                    <Icon className="w-6 h-6" />
+                  </span>
+                  <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                  <p className="text-zinc-400 leading-relaxed">{item.description}</p>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
 
       {/* Broadcasting Section */}
-      <section className="py-24 px-6 bg-[#0a0a0a]">
-        <div className="max-w-6xl mx-auto">
+      <section className="relative py-24 px-6 bg-[#0a0a0a] overflow-hidden">
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-yellow-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="relative max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs uppercase tracking-[0.25em] text-yellow-500 mb-4">Broadcasting</p>
+            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-yellow-500 mb-4">
+              <span className="w-6 h-px bg-yellow-500" />
+              Broadcasting
+              <span className="w-6 h-px bg-yellow-500" />
+            </p>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Multi-Camera Streaming & Connectivity</h2>
             <p className="text-zinc-400 max-w-3xl mx-auto">
               Our live broadcasting infrastructure delivers reliable, high-quality streams to any platform.
@@ -184,16 +223,21 @@ export default async function HomePage() {
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { title: 'Multi-Camera Switching', desc: 'Seamless live switching between 3–8 camera angles for dynamic, professional broadcasts.' },
-              { title: 'Real-Time Monitoring', desc: 'Live preview, audio metering, and signal monitoring to ensure flawless delivery.' },
-              { title: 'Global Streaming', desc: 'Stream to YouTube, Facebook, Vimeo, or custom HLS endpoints with adaptive bitrate.' },
-            ].map((item, i) => (
-              <div key={i} className="p-8 bg-[#111111] rounded-lg border border-yellow-500/10 hover:border-yellow-500/30 transition-all duration-300">
-                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                <p className="text-zinc-400 leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
+            {broadcastFeatures.map((item, i) => {
+              const Icon = item.icon
+              return (
+                <div
+                  key={i}
+                  className="relative p-8 bg-gradient-to-b from-[#151515] to-[#0a0a0a] rounded-xl border border-yellow-500/10 hover:border-yellow-500/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_-8px_rgba(234,179,8,0.3)]"
+                >
+                  <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-yellow-500/10 text-yellow-500 mb-5">
+                    <Icon className="w-6 h-6" />
+                  </span>
+                  <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                  <p className="text-zinc-400 leading-relaxed">{item.desc}</p>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -205,14 +249,24 @@ export default async function HomePage() {
       <section className="py-24 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs uppercase tracking-[0.25em] text-yellow-500 mb-4">How We Work</p>
+            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-yellow-500 mb-4">
+              <span className="w-6 h-px bg-yellow-500" />
+              How We Work
+              <span className="w-6 h-px bg-yellow-500" />
+            </p>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Our Process</h2>
             <p className="text-zinc-400 max-w-2xl mx-auto">From first conversation to final delivery — a proven workflow.</p>
           </div>
           <div className="grid md:grid-cols-4 gap-6">
             {processSteps.map((step, i) => (
-              <div key={i} className="text-center p-6 bg-[#111111] rounded-lg border border-yellow-500/10 hover:border-yellow-500/30 transition-all duration-300">
-                <div className="w-12 h-12 rounded-full bg-yellow-500 flex items-center justify-center text-[#050505] font-bold text-lg mx-auto mb-4 shadow-lg shadow-yellow-500/20">
+              <div
+                key={i}
+                className="relative text-center p-6 bg-gradient-to-b from-[#141414] to-[#0d0d0d] rounded-xl border border-yellow-500/10 hover:border-yellow-500/40 transition-all duration-300 hover:-translate-y-1"
+              >
+                {i < processSteps.length - 1 && (
+                  <div className="hidden md:block absolute top-10 -right-3 w-6 h-px bg-yellow-500/20" />
+                )}
+                <div className="w-12 h-12 rounded-full bg-gradient-to-b from-yellow-400 to-yellow-600 flex items-center justify-center text-[#050505] font-bold text-lg mx-auto mb-4 shadow-lg shadow-yellow-500/30">
                   {i + 1}
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
@@ -224,17 +278,25 @@ export default async function HomePage() {
       </section>
 
       {/* Equipment & Technology */}
-      <section className="py-24 px-6 bg-[#0a0a0a]">
-        <div className="max-w-5xl mx-auto">
+      <section className="relative py-24 px-6 bg-[#0a0a0a] overflow-hidden">
+        <div className="absolute top-0 left-0 w-[350px] h-[350px] bg-yellow-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="relative max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs uppercase tracking-[0.25em] text-yellow-500 mb-4">Equipment</p>
+            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-yellow-500 mb-4">
+              <span className="w-6 h-px bg-yellow-500" />
+              Equipment
+              <span className="w-6 h-px bg-yellow-500" />
+            </p>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Equipment & Technology</h2>
             <p className="text-zinc-400 max-w-2xl mx-auto">We use industry-leading gear to deliver production value that stands out.</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {equipment.map((item, i) => (
-              <div key={i} className="p-5 bg-[#111111] rounded-lg border border-yellow-500/10 hover:border-yellow-500/30 transition-all duration-300 text-center">
-                <p className="text-yellow-500 text-xl mb-1">✓</p>
+              <div
+                key={i}
+                className="group p-5 bg-gradient-to-b from-[#151515] to-[#0d0d0d] rounded-xl border border-yellow-500/10 hover:border-yellow-500/40 transition-all duration-300 text-center hover:-translate-y-1"
+              >
+                <p className="text-yellow-500 text-xl mb-1 group-hover:scale-125 transition-transform duration-300 inline-block">✓</p>
                 <p className="text-white text-sm font-medium">{item}</p>
               </div>
             ))}
@@ -243,24 +305,30 @@ export default async function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 px-6">
-        <div className="max-w-5xl mx-auto">
+      <section className="relative py-24 px-6 overflow-hidden">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[450px] h-[450px] bg-yellow-500/10 rounded-full blur-[130px] pointer-events-none" />
+        <div className="relative max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs uppercase tracking-[0.25em] text-yellow-500 mb-4">Testimonials</p>
+            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-yellow-500 mb-4">
+              <span className="w-6 h-px bg-yellow-500" />
+              Testimonials
+              <span className="w-6 h-px bg-yellow-500" />
+            </p>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">What Our Clients Say</h2>
             <p className="text-zinc-400 max-w-2xl mx-auto">Don't take our word for it — hear from those we've served.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
-              <div key={i} className="p-8 bg-[#111111] rounded-lg border border-yellow-500/10 hover:border-yellow-500/30 transition-all duration-300">
-                <svg className="w-8 h-8 text-yellow-500/20 mb-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11H10v10H0z" />
-                </svg>
+              <div
+                key={i}
+                className="relative p-8 bg-gradient-to-b from-[#151515] to-[#0d0d0d] rounded-xl border border-yellow-500/10 hover:border-yellow-500/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_-8px_rgba(234,179,8,0.3)]"
+              >
+                <Quote className="w-8 h-8 text-yellow-500/25 mb-4" fill="currentColor" />
                 {t.image_url && (
-                  <img src={t.image_url} alt={t.author || 'Client photo'} className="w-14 h-14 rounded-full object-cover border border-yellow-500 mb-4" />
+                  <img src={t.image_url} alt={t.author || 'Client photo'} className="w-14 h-14 rounded-full object-cover border-2 border-yellow-500 mb-4" />
                 )}
                 <p className="text-zinc-300 text-sm leading-relaxed mb-6">{t.quote}</p>
-                <div>
+                <div className="pt-4 border-t border-yellow-500/10">
                   <p className="text-white font-bold text-sm">{t.author}</p>
                   <p className="text-yellow-500 text-xs">{t.role}</p>
                 </div>
@@ -271,8 +339,9 @@ export default async function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-6 bg-[#0a0a0a]">
-        <div className="max-w-3xl mx-auto text-center">
+      <section className="relative py-24 px-6 bg-[#0a0a0a] overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(234,179,8,0.08),transparent_70%)]" />
+        <div className="relative max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
             Let's Create Something Exceptional
           </h2>
@@ -281,7 +350,7 @@ export default async function HomePage() {
           </p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-10 py-4 rounded-full transition-all duration-300 text-lg"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-300 hover:to-yellow-400 text-black font-bold px-10 py-4 rounded-full transition-all duration-300 text-lg shadow-lg shadow-yellow-500/20 hover:shadow-yellow-500/40"
           >
             Contact Us Today
           </Link>
